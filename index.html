@@ -1,814 +1,796 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Recipes">
+  <meta name="theme-color" content="#EA580C">
+  <title>Recipe Database</title>
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    [data-lucide] {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
   </style>
 </head>
 <body>
-<p class="p1"><br></p>
-<p class="p2">&lt;!DOCTYPE html&gt;</p>
-<p class="p2">&lt;html lang="en"&gt;</p>
-<p class="p2">&lt;head&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;meta name="apple-mobile-web-app-status-bar-style" content="default"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;meta name="apple-mobile-web-app-title" content="Recipes"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;meta name="theme-color" content="#EA580C"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;title&gt;Recipe Database&lt;/title&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;link rel="manifest" href="manifest.json"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;script src="https://unpkg.com/react@18/umd/react.production.min.js"&gt;&lt;/script&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"&gt;&lt;/script&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;script src="https://unpkg.com/@babel/standalone/babel.min.js"&gt;&lt;/script&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span>[data-lucide] {</p>
-<p class="p2"><span class="Apple-converted-space">      </span>width: 20px;</p>
-<p class="p2"><span class="Apple-converted-space">      </span>height: 20px;</p>
-<p class="p2"><span class="Apple-converted-space">      </span>stroke: currentColor;</p>
-<p class="p2"><span class="Apple-converted-space">      </span>stroke-width: 2;</p>
-<p class="p2"><span class="Apple-converted-space">      </span>fill: none;</p>
-<p class="p2"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
-<p class="p2">&lt;/head&gt;</p>
-<p class="p2">&lt;body&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;div id="root"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span></p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span></p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;script type="text/babel"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span>const { useState, useEffect } = React;</p>
-<p class="p2"><span class="Apple-converted-space">    </span>const SUPABASE_URL = 'https://tclszwdvmpgtquzrtqvw.supabase.co';</p>
-<p class="p2"><span class="Apple-converted-space">    </span>const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjbHN6d2R2bXBndHF1enJ0cXZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMjg2MjQsImV4cCI6MjA3ODgwNDYyNH0.tBBTjltWuM3XQJbsB5IcCtDFNTLmaD8_ay4BVE5dw6E';</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">    </span>function RecipeDatabase() {</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [recipes, setRecipes] = useState([]);</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [searchTerm, setSearchTerm] = useState('');</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [categoryFilter, setCategoryFilter] = useState('all');</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [tagFilter, setTagFilter] = useState('all');</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [showAddForm, setShowAddForm] = useState(false);</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [editingRecipe, setEditingRecipe] = useState(null);</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [showShareInfo, setShowShareInfo] = useState(false);</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [userName, setUserName] = useState('');</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [showNamePrompt, setShowNamePrompt] = useState(false);</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [commentText, setCommentText] = useState({});</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [loading, setLoading] = useState(true);</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [error, setError] = useState('');</p>
-<p class="p2"><span class="Apple-converted-space">      </span>const [newRecipe, setNewRecipe] = useState({</p>
-<p class="p2"><span class="Apple-converted-space">        </span>name: '',</p>
-<p class="p2"><span class="Apple-converted-space">        </span>ingredients: '',</p>
-<p class="p2"><span class="Apple-converted-space">        </span>instructions: '',</p>
-<p class="p2"><span class="Apple-converted-space">        </span>prepTime: '',</p>
-<p class="p2"><span class="Apple-converted-space">        </span>servings: '',</p>
-<p class="p2"><span class="Apple-converted-space">        </span>category: 'main',</p>
-<p class="p2"><span class="Apple-converted-space">        </span>source: '',</p>
-<p class="p2"><span class="Apple-converted-space">        </span>tags: ''</p>
-<p class="p2"><span class="Apple-converted-space">      </span>});</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const categories = [</p>
-<p class="p2"><span class="Apple-converted-space">        </span>{ value: 'main', label: 'Main Dish' },</p>
-<p class="p2"><span class="Apple-converted-space">        </span>{ value: 'side', label: 'Side Dish' },</p>
-<p class="p2"><span class="Apple-converted-space">        </span>{ value: 'drink', label: 'Drink' },</p>
-<p class="p2"><span class="Apple-converted-space">        </span>{ value: 'dessert', label: 'Dessert' },</p>
-<p class="p2"><span class="Apple-converted-space">        </span>{ value: 'appetizer', label: 'Appetizer' }</p>
-<p class="p2"><span class="Apple-converted-space">      </span>];</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>useEffect(() =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>loadUserName();</p>
-<p class="p2"><span class="Apple-converted-space">        </span>loadRecipes();</p>
-<p class="p2"><span class="Apple-converted-space">      </span>}, []);</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>useEffect(() =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>lucide.createIcons();</p>
-<p class="p2"><span class="Apple-converted-space">      </span>});</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const loadUserName = () =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>const stored = localStorage.getItem('userName');</p>
-<p class="p2"><span class="Apple-converted-space">        </span>if (stored) {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>setUserName(stored);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>} else {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>setShowNamePrompt(true);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const saveUserName = (name) =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>if (!name.trim()) {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>alert('Please enter a name');</p>
-<p class="p2"><span class="Apple-converted-space">          </span>return;</p>
-<p class="p2"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span>localStorage.setItem('userName', name.trim());</p>
-<p class="p2"><span class="Apple-converted-space">        </span>setUserName(name.trim());</p>
-<p class="p2"><span class="Apple-converted-space">        </span>setShowNamePrompt(false);</p>
-<p class="p2"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const loadRecipes = async () =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>setLoading(true);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>setError('');</p>
-<p class="p2"><span class="Apple-converted-space">        </span>try {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?select=*&amp;order=date_added.desc`, {</p>
-<p class="p2"><span class="Apple-converted-space">            </span>headers: {</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'apikey': SUPABASE_ANON_KEY,</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'Authorization': `Bearer ${SUPABASE_ANON_KEY}`</p>
-<p class="p2"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><span class="Apple-converted-space">          </span>});</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">          </span>if (!response.ok) {</p>
-<p class="p2"><span class="Apple-converted-space">            </span>const errorText = await response.text();</p>
-<p class="p2"><span class="Apple-converted-space">            </span>throw new Error(`Failed to load recipes: ${response.status}`);</p>
-<p class="p2"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><span class="Apple-converted-space">          </span></p>
-<p class="p2"><span class="Apple-converted-space">          </span>const data = await response.json();</p>
-<p class="p2"><span class="Apple-converted-space">          </span>setRecipes(data);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>} catch (err) {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>console.error('Load error:', err);</p>
-<p class="p2"><span class="Apple-converted-space">          </span>setError(`Failed to load recipes: ${err.message}`);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>} finally {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>setLoading(false);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const getAllTags = () =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>const tagSet = new Set();</p>
-<p class="p2"><span class="Apple-converted-space">        </span>recipes.forEach(recipe =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>if (recipe.tags) {</p>
-<p class="p2"><span class="Apple-converted-space">            </span>recipe.tags.forEach(tag =&gt; tagSet.add(tag));</p>
-<p class="p2"><span class="Apple-converted-space">          </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span>});</p>
-<p class="p2"><span class="Apple-converted-space">        </span>return Array.from(tagSet).sort();</p>
-<p class="p2"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const startEdit = (recipe) =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>setEditingRecipe(recipe);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>setNewRecipe({</p>
-<p class="p2"><span class="Apple-converted-space">          </span>name: recipe.name,</p>
-<p class="p2"><span class="Apple-converted-space">          </span>ingredients: recipe.ingredients.join(', '),</p>
-<p class="p2"><span class="Apple-converted-space">          </span>instructions: recipe.instructions,</p>
-<p class="p2"><span class="Apple-converted-space">          </span>prepTime: recipe.prep_time,</p>
-<p class="p2"><span class="Apple-converted-space">          </span>servings: recipe.servings,</p>
-<p class="p2"><span class="Apple-converted-space">          </span>category: recipe.category,</p>
-<p class="p2"><span class="Apple-converted-space">          </span>source: recipe.source || '',</p>
-<p class="p2"><span class="Apple-converted-space">          </span>tags: recipe.tags ? recipe.tags.join(', ') : ''</p>
-<p class="p2"><span class="Apple-converted-space">        </span>});</p>
-<p class="p2"><span class="Apple-converted-space">        </span>setShowAddForm(true);</p>
-<p class="p2"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const cancelEdit = () =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>setEditingRecipe(null);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>setNewRecipe({</p>
-<p class="p2"><span class="Apple-converted-space">          </span>name: '',</p>
-<p class="p2"><span class="Apple-converted-space">          </span>ingredients: '',</p>
-<p class="p2"><span class="Apple-converted-space">          </span>instructions: '',</p>
-<p class="p2"><span class="Apple-converted-space">          </span>prepTime: '',</p>
-<p class="p2"><span class="Apple-converted-space">          </span>servings: '',</p>
-<p class="p2"><span class="Apple-converted-space">          </span>category: 'main',</p>
-<p class="p2"><span class="Apple-converted-space">          </span>source: '',</p>
-<p class="p2"><span class="Apple-converted-space">          </span>tags: ''</p>
-<p class="p2"><span class="Apple-converted-space">        </span>});</p>
-<p class="p2"><span class="Apple-converted-space">        </span>setShowAddForm(false);</p>
-<p class="p2"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const saveRecipe = async () =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>if (!newRecipe.name || !newRecipe.ingredients) {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>alert('Please fill in at least the recipe name and ingredients');</p>
-<p class="p2"><span class="Apple-converted-space">          </span>return;</p>
-<p class="p2"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">        </span>if (!userName) {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>alert('Please set your name first');</p>
-<p class="p2"><span class="Apple-converted-space">          </span>setShowNamePrompt(true);</p>
-<p class="p2"><span class="Apple-converted-space">          </span>return;</p>
-<p class="p2"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">        </span>const recipeData = {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>name: newRecipe.name,</p>
-<p class="p2"><span class="Apple-converted-space">          </span>ingredients: newRecipe.ingredients.split(',').map(i =&gt; i.trim()).filter(i =&gt; i),</p>
-<p class="p2"><span class="Apple-converted-space">          </span>instructions: newRecipe.instructions,</p>
-<p class="p2"><span class="Apple-converted-space">          </span>prep_time: newRecipe.prepTime,</p>
-<p class="p2"><span class="Apple-converted-space">          </span>servings: newRecipe.servings,</p>
-<p class="p2"><span class="Apple-converted-space">          </span>category: newRecipe.category,</p>
-<p class="p2"><span class="Apple-converted-space">          </span>source: newRecipe.source,</p>
-<p class="p2"><span class="Apple-converted-space">          </span>tags: newRecipe.tags ? newRecipe.tags.split(',').map(t =&gt; t.trim()).filter(t =&gt; t) : [],</p>
-<p class="p2"><span class="Apple-converted-space">          </span>comments: []</p>
-<p class="p2"><span class="Apple-converted-space">        </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">        </span>try {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>if (editingRecipe) {</p>
-<p class="p2"><span class="Apple-converted-space">            </span>const updateData = {</p>
-<p class="p2"><span class="Apple-converted-space">              </span>...recipeData,</p>
-<p class="p2"><span class="Apple-converted-space">              </span>last_edited_by: userName,</p>
-<p class="p2"><span class="Apple-converted-space">              </span>date_modified: new Date().toISOString()</p>
-<p class="p2"><span class="Apple-converted-space">            </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">            </span>const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?id=eq.${editingRecipe.id}`, {</p>
-<p class="p2"><span class="Apple-converted-space">              </span>method: 'PATCH',</p>
-<p class="p2"><span class="Apple-converted-space">              </span>headers: {</p>
-<p class="p2"><span class="Apple-converted-space">                </span>'apikey': SUPABASE_ANON_KEY,</p>
-<p class="p2"><span class="Apple-converted-space">                </span>'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,</p>
-<p class="p2"><span class="Apple-converted-space">                </span>'Content-Type': 'application/json',</p>
-<p class="p2"><span class="Apple-converted-space">                </span>'Prefer': 'return=representation'</p>
-<p class="p2"><span class="Apple-converted-space">              </span>},</p>
-<p class="p2"><span class="Apple-converted-space">              </span>body: JSON.stringify(updateData)</p>
-<p class="p2"><span class="Apple-converted-space">            </span>});</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">            </span>if (!response.ok) throw new Error('Failed to update recipe');</p>
-<p class="p2"><span class="Apple-converted-space">          </span>} else {</p>
-<p class="p2"><span class="Apple-converted-space">            </span>const insertData = {</p>
-<p class="p2"><span class="Apple-converted-space">              </span>...recipeData,</p>
-<p class="p2"><span class="Apple-converted-space">              </span>added_by: userName,</p>
-<p class="p2"><span class="Apple-converted-space">              </span>date_added: new Date().toISOString()</p>
-<p class="p2"><span class="Apple-converted-space">            </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">            </span>const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes`, {</p>
-<p class="p2"><span class="Apple-converted-space">              </span>method: 'POST',</p>
-<p class="p2"><span class="Apple-converted-space">              </span>headers: {</p>
-<p class="p2"><span class="Apple-converted-space">                </span>'apikey': SUPABASE_ANON_KEY,</p>
-<p class="p2"><span class="Apple-converted-space">                </span>'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,</p>
-<p class="p2"><span class="Apple-converted-space">                </span>'Content-Type': 'application/json',</p>
-<p class="p2"><span class="Apple-converted-space">                </span>'Prefer': 'return=representation'</p>
-<p class="p2"><span class="Apple-converted-space">              </span>},</p>
-<p class="p2"><span class="Apple-converted-space">              </span>body: JSON.stringify(insertData)</p>
-<p class="p2"><span class="Apple-converted-space">            </span>});</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">            </span>if (!response.ok) throw new Error('Failed to add recipe');</p>
-<p class="p2"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">          </span>await loadRecipes();</p>
-<p class="p2"><span class="Apple-converted-space">          </span>cancelEdit();</p>
-<p class="p2"><span class="Apple-converted-space">        </span>} catch (err) {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>console.error('Save error:', err);</p>
-<p class="p2"><span class="Apple-converted-space">          </span>alert('Failed to save recipe. Please try again.');</p>
-<p class="p2"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const deleteRecipe = async (id) =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>if (!confirm('Are you sure you want to delete this recipe?')) return;</p>
-<p class="p1"><span class="Apple-converted-space">        </span></p>
-<p class="p2"><span class="Apple-converted-space">        </span>try {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?id=eq.${id}`, {</p>
-<p class="p2"><span class="Apple-converted-space">            </span>method: 'DELETE',</p>
-<p class="p2"><span class="Apple-converted-space">            </span>headers: {</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'apikey': SUPABASE_ANON_KEY,</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'Authorization': `Bearer ${SUPABASE_ANON_KEY}`</p>
-<p class="p2"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><span class="Apple-converted-space">          </span>});</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">          </span>if (!response.ok) throw new Error('Failed to delete recipe');</p>
-<p class="p1"><span class="Apple-converted-space">          </span></p>
-<p class="p2"><span class="Apple-converted-space">          </span>await loadRecipes();</p>
-<p class="p2"><span class="Apple-converted-space">        </span>} catch (err) {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>console.error('Delete error:', err);</p>
-<p class="p2"><span class="Apple-converted-space">          </span>alert('Failed to delete recipe. Please try again.');</p>
-<p class="p2"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const addComment = async (recipeId) =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>const comment = commentText[recipeId];</p>
-<p class="p2"><span class="Apple-converted-space">        </span>if (!comment || !comment.trim()) {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>alert('Please enter a comment');</p>
-<p class="p2"><span class="Apple-converted-space">          </span>return;</p>
-<p class="p2"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">        </span>if (!userName) {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>alert('Please set your name first');</p>
-<p class="p2"><span class="Apple-converted-space">          </span>setShowNamePrompt(true);</p>
-<p class="p2"><span class="Apple-converted-space">          </span>return;</p>
-<p class="p2"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">        </span>try {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>const recipe = recipes.find(r =&gt; r.id === recipeId);</p>
-<p class="p2"><span class="Apple-converted-space">          </span>const newComment = {</p>
-<p class="p2"><span class="Apple-converted-space">            </span>id: Date.now(),</p>
-<p class="p2"><span class="Apple-converted-space">            </span>text: comment.trim(),</p>
-<p class="p2"><span class="Apple-converted-space">            </span>author: userName,</p>
-<p class="p2"><span class="Apple-converted-space">            </span>date: new Date().toISOString()</p>
-<p class="p2"><span class="Apple-converted-space">          </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">          </span>const updatedComments = [...(recipe.comments || []), newComment];</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">          </span>const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?id=eq.${recipeId}`, {</p>
-<p class="p2"><span class="Apple-converted-space">            </span>method: 'PATCH',</p>
-<p class="p2"><span class="Apple-converted-space">            </span>headers: {</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'apikey': SUPABASE_ANON_KEY,</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'Content-Type': 'application/json',</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'Prefer': 'return=representation'</p>
-<p class="p2"><span class="Apple-converted-space">            </span>},</p>
-<p class="p2"><span class="Apple-converted-space">            </span>body: JSON.stringify({ comments: updatedComments })</p>
-<p class="p2"><span class="Apple-converted-space">          </span>});</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">          </span>if (!response.ok) throw new Error('Failed to add comment');</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">          </span>await loadRecipes();</p>
-<p class="p2"><span class="Apple-converted-space">          </span>setCommentText({ ...commentText, [recipeId]: '' });</p>
-<p class="p2"><span class="Apple-converted-space">        </span>} catch (err) {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>console.error('Comment error:', err);</p>
-<p class="p2"><span class="Apple-converted-space">          </span>alert('Failed to add comment. Please try again.');</p>
-<p class="p2"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const deleteComment = async (recipeId, commentId) =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>if (!confirm('Delete this comment?')) return;</p>
-<p class="p1"><span class="Apple-converted-space">        </span></p>
-<p class="p2"><span class="Apple-converted-space">        </span>try {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>const recipe = recipes.find(r =&gt; r.id === recipeId);</p>
-<p class="p2"><span class="Apple-converted-space">          </span>const updatedComments = recipe.comments.filter(c =&gt; c.id !== commentId);</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">          </span>const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?id=eq.${recipeId}`, {</p>
-<p class="p2"><span class="Apple-converted-space">            </span>method: 'PATCH',</p>
-<p class="p2"><span class="Apple-converted-space">            </span>headers: {</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'apikey': SUPABASE_ANON_KEY,</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'Content-Type': 'application/json',</p>
-<p class="p2"><span class="Apple-converted-space">              </span>'Prefer': 'return=representation'</p>
-<p class="p2"><span class="Apple-converted-space">            </span>},</p>
-<p class="p2"><span class="Apple-converted-space">            </span>body: JSON.stringify({ comments: updatedComments })</p>
-<p class="p2"><span class="Apple-converted-space">          </span>});</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">          </span>if (!response.ok) throw new Error('Failed to delete comment');</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">          </span>await loadRecipes();</p>
-<p class="p2"><span class="Apple-converted-space">        </span>} catch (err) {</p>
-<p class="p2"><span class="Apple-converted-space">          </span>console.error('Delete comment error:', err);</p>
-<p class="p2"><span class="Apple-converted-space">          </span>alert('Failed to delete comment. Please try again.');</p>
-<p class="p2"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const formatDate = (dateString) =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>const date = new Date(dateString);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>return date.toLocaleDateString('en-US', {<span class="Apple-converted-space"> </span></p>
-<p class="p2"><span class="Apple-converted-space">          </span>year: 'numeric',<span class="Apple-converted-space"> </span></p>
-<p class="p2"><span class="Apple-converted-space">          </span>month: 'short',<span class="Apple-converted-space"> </span></p>
-<p class="p2"><span class="Apple-converted-space">          </span>day: 'numeric',</p>
-<p class="p2"><span class="Apple-converted-space">          </span>hour: '2-digit',</p>
-<p class="p2"><span class="Apple-converted-space">          </span>minute: '2-digit'</p>
-<p class="p2"><span class="Apple-converted-space">        </span>});</p>
-<p class="p2"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>const filteredRecipes = recipes.filter(recipe =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">        </span>const categoryMatch = categoryFilter === 'all' || recipe.category === categoryFilter;</p>
-<p class="p2"><span class="Apple-converted-space">        </span>const tagMatch = tagFilter === 'all' || (recipe.tags &amp;&amp; recipe.tags.includes(tagFilter));</p>
-<p class="p1"><span class="Apple-converted-space">        </span></p>
-<p class="p2"><span class="Apple-converted-space">        </span>if (!searchTerm) return categoryMatch &amp;&amp; tagMatch;</p>
-<p class="p1"><span class="Apple-converted-space">        </span></p>
-<p class="p2"><span class="Apple-converted-space">        </span>const searchLower = searchTerm.toLowerCase();</p>
-<p class="p2"><span class="Apple-converted-space">        </span>const nameMatch = recipe.name.toLowerCase().includes(searchLower);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>const ingredientMatch = recipe.ingredients.some(ing =&gt;<span class="Apple-converted-space"> </span></p>
-<p class="p2"><span class="Apple-converted-space">          </span>ing.toLowerCase().includes(searchLower)</p>
-<p class="p2"><span class="Apple-converted-space">        </span>);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>const sourceMatch = recipe.source?.toLowerCase().includes(searchLower);</p>
-<p class="p2"><span class="Apple-converted-space">        </span>const tagSearchMatch = recipe.tags?.some(tag =&gt;<span class="Apple-converted-space"> </span></p>
-<p class="p2"><span class="Apple-converted-space">          </span>tag.toLowerCase().includes(searchLower)</p>
-<p class="p2"><span class="Apple-converted-space">        </span>);</p>
-<p class="p1"><span class="Apple-converted-space">        </span></p>
-<p class="p2"><span class="Apple-converted-space">        </span>return categoryMatch &amp;&amp; tagMatch &amp;&amp; (nameMatch || ingredientMatch || sourceMatch || tagSearchMatch);</p>
-<p class="p2"><span class="Apple-converted-space">      </span>});</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">      </span>return (</p>
-<p class="p2"><span class="Apple-converted-space">        </span>&lt;div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50 p-4 md:p-8"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">          </span>{showNamePrompt &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">            </span>&lt;div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;h2 className="text-2xl font-bold text-gray-800 mb-4"&gt;Welcome! What's your name?&lt;/h2&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;p className="text-gray-600 mb-4"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>Your name will be shown when you add or edit recipes, and when you comment.</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;/p&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;input</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>id="nameInput"</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>type="text"</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>placeholder="Enter your name"</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-orange-400 mb-4"</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>onKeyPress={(e) =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>if (e.key === 'Enter') {</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>saveUserName(e.target.value);</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>}</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>}}</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>autoFocus</p>
-<p class="p2"><span class="Apple-converted-space">                </span>/&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>onClick={() =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>const input = document.getElementById('nameInput');</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>saveUserName(input.value);</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>}}</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-lg font-semibold transition-colors"</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>Save Name</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">          </span>)}</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">          </span>&lt;div className="max-w-6xl mx-auto"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span>&lt;div className="text-center mb-8"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;div className="flex items-center justify-center gap-2 mb-2"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;i data-lucide="chef-hat" className="w-10 h-10 text-orange-600"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;h1 className="text-4xl font-bold text-gray-800"&gt;Recipe Database&lt;/h1&gt;</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;p className="text-gray-600"&gt;Shared recipe collection powered by Supabase&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span></p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                </span>onClick={() =&gt; setShowShareInfo(!showShareInfo)}</p>
-<p class="p2"><span class="Apple-converted-space">                </span>className="mt-2 text-orange-600 hover:text-orange-700 flex items-center gap-1 mx-auto"</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;i data-lucide="share-2" className="w-4 h-4"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;span className="ml-1"&gt;Install as iPhone App&lt;/span&gt;</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span></p>
-<p class="p2"><span class="Apple-converted-space">              </span>{showShareInfo &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;div className="mt-3 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg text-left max-w-2xl mx-auto"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&lt;h3 className="font-bold text-blue-900 mb-2"&gt;📱 Install as iPhone App (PWA):&lt;/h3&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&lt;ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;li&gt;Open this page in Safari on iPhone&lt;/li&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;li&gt;Tap the Share button (square with arrow)&lt;/li&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;li&gt;Scroll down and tap "Add to Home Screen"&lt;/li&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;li&gt;Tap "Add" - it now works like a native app!&lt;/li&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&lt;/ol&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span></p>
-<p class="p2"><span class="Apple-converted-space">                  </span>{userName &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;p className="text-sm text-blue-800 mt-3"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;strong&gt;Signed in as:&lt;/strong&gt; {userName}<span class="Apple-converted-space"> </span></p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;button<span class="Apple-converted-space"> </span></p>
-<p class="p2"><span class="Apple-converted-space">                        </span>onClick={() =&gt; setShowNamePrompt(true)}</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>className="ml-2 text-blue-600 underline hover:text-blue-800"</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>(change)</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;/p&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">              </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">            </span>{error &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-lg text-red-800"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>{error}</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span>)}</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">            </span>{loading ? (</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;div className="text-center py-12"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;i data-lucide="loader" className="w-12 h-12 text-orange-600 animate-spin mx-auto mb-4"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;p className="text-gray-600"&gt;Loading recipes...&lt;/p&gt;</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span>) : (</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;div className="mb-6 space-y-4"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&lt;div className="relative"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;i data-lucide="search" className="absolute left-4 top-3.5 text-gray-400 w-5 h-5"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;input</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>type="text"</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>placeholder="Search by ingredient, recipe name, source, or tag..."</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>value={searchTerm}</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>onChange={(e) =&gt; setSearchTerm(e.target.value)}</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>className="w-full pl-12 pr-4 py-3 border-2 border-orange-200 rounded-lg focus:outline-none focus:border-orange-400 text-lg"</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>/&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&lt;div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;div className="text-sm font-semibold text-gray-700 mb-2"&gt;Category:&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;div className="flex gap-2 flex-wrap"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>onClick={() =&gt; setCategoryFilter('all')}</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>className={`px-4 py-2 rounded-lg font-semibold transition-colors ${</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>categoryFilter === 'all' ? 'bg-orange-600 text-white' : 'bg-white text-gray-700 hover:bg-orange-100'</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>}`}</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>All</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>{categories.map(cat =&gt; (</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>key={cat.value}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>onClick={() =&gt; setCategoryFilter(cat.value)}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>className={`px-4 py-2 rounded-lg font-semibold transition-colors ${</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>categoryFilter === cat.value ? 'bg-orange-600 text-white' : 'bg-white text-gray-700 hover:bg-orange-100'</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>}`}</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>{cat.label}</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>))}</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                  </span>{getAllTags().length &gt; 0 &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;div className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;i data-lucide="tag" className="w-4 h-4"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;span className="ml-1"&gt;Tags:&lt;/span&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;div className="flex gap-2 flex-wrap"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>onClick={() =&gt; setTagFilter('all')}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>tagFilter === 'all' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-purple-100'</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>}`}</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>All</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>{getAllTags().map(tag =&gt; (</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>key={tag}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>onClick={() =&gt; setTagFilter(tag)}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>tagFilter === tag ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-purple-100'</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>}`}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>{tag}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>))}</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;div className="mb-6 flex justify-center"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>onClick={() =&gt; showAddForm ? cancelEdit() : setShowAddForm(true)}</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 font-semibold transition-colors"</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>{showAddForm ? &lt;i data-lucide="x" className="w-5 h-5"&gt;&lt;/i&gt; : &lt;i data-lucide="plus" className="w-5 h-5"&gt;&lt;/i&gt;}</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;span className="ml-1"&gt;{showAddForm ? 'Cancel' : 'Add New Recipe'}&lt;/span&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                </span>{showAddForm &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&lt;div className="bg-white rounded-xl shadow-lg p-6 mb-6"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;h2 className="text-2xl font-bold text-gray-800 mb-4"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>{editingRecipe ? 'Edit Recipe' : 'Add New Recipe'}</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;/h2&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;div className="space-y-4"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;label className="block text-sm font-semibold text-gray-700 mb-1"&gt;Recipe Name *&lt;/label&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;input</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>type="text"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>value={newRecipe.name}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>onChange={(e) =&gt; setNewRecipe({...newRecipe, name: e.target.value})}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>placeholder="e.g., Spaghetti Carbonara"</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>/&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;div className="grid grid-cols-2 gap-4"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;label className="block text-sm font-semibold text-gray-700 mb-1"&gt;Category *&lt;/label&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;select</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>value={newRecipe.category}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>onChange={(e) =&gt; setNewRecipe({...newRecipe, category: e.target.value})}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>{categories.map(cat =&gt; (</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>&lt;option key={cat.value} value={cat.value}&gt;{cat.label}&lt;/option&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>))}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;/select&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;label className="block text-sm font-semibold text-gray-700 mb-1"&gt;Source&lt;/label&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;input</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>type="text"</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>value={newRecipe.source}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>onChange={(e) =&gt; setNewRecipe({...newRecipe, source: e.target.value})}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>placeholder="e.g., Grandma, NYT Cooking"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>/&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span></p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;label className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;i data-lucide="tag" className="w-4 h-4"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;span className="ml-1"&gt;Tags (comma-separated)&lt;/span&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/label&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;input</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>type="text"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>value={newRecipe.tags}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>onChange={(e) =&gt; setNewRecipe({...newRecipe, tags: e.target.value})}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>placeholder="e.g., quick, vegetarian, comfort food"</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>/&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;label className="block text-sm font-semibold text-gray-700 mb-1"&gt;Ingredients * (comma-separated)&lt;/label&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;textarea</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>value={newRecipe.ingredients}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>onChange={(e) =&gt; setNewRecipe({...newRecipe, ingredients: e.target.value})}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>rows="3"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>placeholder="e.g., pasta, eggs, bacon, parmesan cheese, black pepper"</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>/&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;div className="grid grid-cols-2 gap-4"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;label className="block text-sm font-semibold text-gray-700 mb-1"&gt;Prep Time&lt;/label&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;input</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>type="text"</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>value={newRecipe.prepTime}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>onChange={(e) =&gt; setNewRecipe({...newRecipe, prepTime: e.target.value})}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>placeholder="e.g., 30 minutes"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>/&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;label className="block text-sm font-semibold text-gray-700 mb-1"&gt;Servings&lt;/label&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;input</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>type="text"</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>value={newRecipe.servings}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>onChange={(e) =&gt; setNewRecipe({...newRecipe, servings: e.target.value})}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>placeholder="e.g., 4"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>/&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;label className="block text-sm font-semibold text-gray-700 mb-1"&gt;Instructions&lt;/label&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;textarea</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>value={newRecipe.instructions}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>onChange={(e) =&gt; setNewRecipe({...newRecipe, instructions: e.target.value})}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>rows="5"</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>placeholder="Step-by-step cooking instructions..."</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>/&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>onClick={saveRecipe}</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-semibold transition-colors"</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>{editingRecipe ? 'Update Recipe' : 'Save Recipe'}</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span>)}</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;div className="space-y-4"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>{filteredRecipes.length === 0 ? (</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;div className="text-center py-12 bg-white rounded-xl shadow"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;i data-lucide="chef-hat" className="w-16 h-16 text-gray-300 mx-auto mb-4"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;p className="text-gray-500 text-lg"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>{recipes.length === 0<span class="Apple-converted-space"> </span></p>
-<p class="p2"><span class="Apple-converted-space">                          </span>? 'No recipes yet. Add your first recipe to get started!'<span class="Apple-converted-space"> </span></p>
-<p class="p2"><span class="Apple-converted-space">                          </span>: 'No recipes found matching your filters.'}</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/p&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>) : (</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>filteredRecipes.map(recipe =&gt; (</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;div key={recipe.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;div className="flex justify-between items-start mb-4"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;div className="flex-1"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;h3 className="text-2xl font-bold text-gray-800"&gt;{recipe.name}&lt;/h3&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;div className="flex flex-wrap gap-2 mt-2"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>&lt;span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                </span>{categories.find(c =&gt; c.value === recipe.category)?.label}</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>&lt;/span&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>{recipe.source &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">                                </span>&lt;span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                  </span>📖 {recipe.source}</p>
-<p class="p2"><span class="Apple-converted-space">                                </span>&lt;/span&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>{recipe.tags &amp;&amp; recipe.tags.map(tag =&gt; (</p>
-<p class="p2"><span class="Apple-converted-space">                                </span>&lt;span key={tag} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                  </span>#{tag}</p>
-<p class="p2"><span class="Apple-converted-space">                                </span>&lt;/span&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>))}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;div className="flex gap-2"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>onClick={() =&gt; startEdit(recipe)}</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>className="text-blue-500 hover:text-blue-700 transition-colors"</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>title="Edit recipe"</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>&lt;i data-lucide="edit-2" className="w-5 h-5"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>onClick={() =&gt; deleteRecipe(recipe.id)}</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>className="text-red-500 hover:text-red-700 transition-colors"</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>title="Delete recipe"</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>&lt;i data-lucide="x" className="w-5 h-5"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;div className="flex gap-4 mb-4 text-sm text-gray-600"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>{recipe.prep_time &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;div className="flex items-center gap-1"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>&lt;i data-lucide="clock" className="w-4 h-4"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>{recipe.prep_time}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>{recipe.servings &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;div className="flex items-center gap-1"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>&lt;i data-lucide="users" className="w-4 h-4"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>{recipe.servings} servings</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;div className="mb-4 pb-4 border-b border-gray-200 text-xs text-gray-500"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>{recipe.added_by &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;div&gt;Added by &lt;span className="font-semibold"&gt;{recipe.added_by}&lt;/span&gt; on {formatDate(recipe.date_added)}&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>{recipe.last_edited_by &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;div className="mt-1"&gt;Last edited by &lt;span className="font-semibold"&gt;{recipe.last_edited_by}&lt;/span&gt; on {formatDate(recipe.date_modified)}&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;div className="mb-4"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;h4 className="font-semibold text-gray-700 mb-2"&gt;Ingredients:&lt;/h4&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;div className="flex flex-wrap gap-2"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>{recipe.ingredients.map((ing, idx) =&gt; (</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>&lt;span<span class="Apple-converted-space"> </span></p>
-<p class="p2"><span class="Apple-converted-space">                                </span>key={idx}</p>
-<p class="p2"><span class="Apple-converted-space">                                </span>className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm"</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                </span>{ing}</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>&lt;/span&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>))}</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                        </span>{recipe.instructions &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;div className="mb-4"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;h4 className="font-semibold text-gray-700 mb-2"&gt;Instructions:&lt;/h4&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;p className="text-gray-600 whitespace-pre-line"&gt;{recipe.instructions}&lt;/p&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>)}</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;div className="mt-6 pt-6 border-t border-gray-200"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>💬 Comments ({recipe.comments?.length || 0})</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;/h4&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span></p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;div className="mb-4 flex gap-2"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;input</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>type="text"</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>placeholder="Add a comment..."</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>value={commentText[recipe.id] || ''}</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>onChange={(e) =&gt; setCommentText({ ...commentText, [recipe.id]: e.target.value })}</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>onKeyPress={(e) =&gt; {</p>
-<p class="p2"><span class="Apple-converted-space">                                </span>if (e.key === 'Enter') {</p>
-<p class="p2"><span class="Apple-converted-space">                                  </span>addComment(recipe.id);</p>
-<p class="p2"><span class="Apple-converted-space">                                </span>}</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>}}</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400 text-sm"</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>/&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>onClick={() =&gt; addComment(recipe.id)}</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm"</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>Post</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>&lt;/div&gt;</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">                          </span>{recipe.comments &amp;&amp; recipe.comments.length &gt; 0 ? (</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;div className="space-y-3"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>{recipe.comments.map(comment =&gt; (</p>
-<p class="p2"><span class="Apple-converted-space">                                </span>&lt;div key={comment.id} className="bg-gray-50 rounded-lg p-3"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                  </span>&lt;div className="flex justify-between items-start mb-1"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                    </span>&lt;span className="font-semibold text-gray-800 text-sm"&gt;{comment.author}&lt;/span&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                    </span>&lt;div className="flex items-center gap-2"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                      </span>&lt;span className="text-xs text-gray-500"&gt;{formatDate(comment.date)}&lt;/span&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                      </span>{comment.author === userName &amp;&amp; (</p>
-<p class="p2"><span class="Apple-converted-space">                                        </span>&lt;button</p>
-<p class="p2"><span class="Apple-converted-space">                                          </span>onClick={() =&gt; deleteComment(recipe.id, comment.id)}</p>
-<p class="p2"><span class="Apple-converted-space">                                          </span>className="text-red-500 hover:text-red-700"</p>
-<p class="p2"><span class="Apple-converted-space">                                        </span>&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                          </span>&lt;i data-lucide="x" className="w-3 h-3"&gt;&lt;/i&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                        </span>&lt;/button&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                      </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                  </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                  </span>&lt;p className="text-gray-700 text-sm"&gt;{comment.text}&lt;/p&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                              </span>))}</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>) : (</p>
-<p class="p2"><span class="Apple-converted-space">                            </span>&lt;p className="text-gray-400 text-sm italic"&gt;No comments yet. Be the first to comment!&lt;/p&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span>))</p>
-<p class="p2"><span class="Apple-converted-space">                  </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">              </span>&lt;/&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">      </span>);</p>
-<p class="p2"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><br></p>
-<p class="p2"><span class="Apple-converted-space">    </span>ReactDOM.render(&lt;RecipeDatabase /&gt;, document.getElementById('root'));</p>
-<p class="p2"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
-<p class="p2">&lt;/body&gt;</p>
-<p class="p2">&lt;/html&gt;</p>
+  <div id="root"></div>
+  
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const SUPABASE_URL = 'https://tclszwdvmpgtquzrtqvw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjbHN6d2R2bXBndHF1enJ0cXZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMjg2MjQsImV4cCI6MjA3ODgwNDYyNH0.tBBTjltWuM3XQJbsB5IcCtDFNTLmaD8_ay4BVE5dw6E';
+
+    function RecipeDatabase() {
+      const [recipes, setRecipes] = useState([]);
+      const [searchTerm, setSearchTerm] = useState('');
+      const [categoryFilter, setCategoryFilter] = useState('all');
+      const [tagFilter, setTagFilter] = useState('all');
+      const [showAddForm, setShowAddForm] = useState(false);
+      const [editingRecipe, setEditingRecipe] = useState(null);
+      const [showShareInfo, setShowShareInfo] = useState(false);
+      const [userName, setUserName] = useState('');
+      const [showNamePrompt, setShowNamePrompt] = useState(false);
+      const [commentText, setCommentText] = useState({});
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState('');
+      const [newRecipe, setNewRecipe] = useState({
+        name: '',
+        ingredients: '',
+        instructions: '',
+        prepTime: '',
+        servings: '',
+        category: 'main',
+        source: '',
+        tags: ''
+      });
+
+      const categories = [
+        { value: 'main', label: 'Main Dish' },
+        { value: 'side', label: 'Side Dish' },
+        { value: 'drink', label: 'Drink' },
+        { value: 'dessert', label: 'Dessert' },
+        { value: 'appetizer', label: 'Appetizer' }
+      ];
+
+      useEffect(() => {
+        loadUserName();
+        loadRecipes();
+      }, []);
+
+      useEffect(() => {
+        lucide.createIcons();
+      });
+
+      const loadUserName = () => {
+        const stored = localStorage.getItem('userName');
+        if (stored) {
+          setUserName(stored);
+        } else {
+          setShowNamePrompt(true);
+        }
+      };
+
+      const saveUserName = (name) => {
+        if (!name.trim()) {
+          alert('Please enter a name');
+          return;
+        }
+        localStorage.setItem('userName', name.trim());
+        setUserName(name.trim());
+        setShowNamePrompt(false);
+      };
+
+      const loadRecipes = async () => {
+        setLoading(true);
+        setError('');
+        try {
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?select=*&order=date_added.desc`, {
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Failed to load recipes: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          setRecipes(data);
+        } catch (err) {
+          console.error('Load error:', err);
+          setError(`Failed to load recipes: ${err.message}`);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const getAllTags = () => {
+        const tagSet = new Set();
+        recipes.forEach(recipe => {
+          if (recipe.tags) {
+            recipe.tags.forEach(tag => tagSet.add(tag));
+          }
+        });
+        return Array.from(tagSet).sort();
+      };
+
+      const startEdit = (recipe) => {
+        setEditingRecipe(recipe);
+        setNewRecipe({
+          name: recipe.name,
+          ingredients: recipe.ingredients.join(', '),
+          instructions: recipe.instructions,
+          prepTime: recipe.prep_time,
+          servings: recipe.servings,
+          category: recipe.category,
+          source: recipe.source || '',
+          tags: recipe.tags ? recipe.tags.join(', ') : ''
+        });
+        setShowAddForm(true);
+      };
+
+      const cancelEdit = () => {
+        setEditingRecipe(null);
+        setNewRecipe({
+          name: '',
+          ingredients: '',
+          instructions: '',
+          prepTime: '',
+          servings: '',
+          category: 'main',
+          source: '',
+          tags: ''
+        });
+        setShowAddForm(false);
+      };
+
+      const saveRecipe = async () => {
+        if (!newRecipe.name || !newRecipe.ingredients) {
+          alert('Please fill in at least the recipe name and ingredients');
+          return;
+        }
+
+        if (!userName) {
+          alert('Please set your name first');
+          setShowNamePrompt(true);
+          return;
+        }
+
+        const recipeData = {
+          name: newRecipe.name,
+          ingredients: newRecipe.ingredients.split(',').map(i => i.trim()).filter(i => i),
+          instructions: newRecipe.instructions,
+          prep_time: newRecipe.prepTime,
+          servings: newRecipe.servings,
+          category: newRecipe.category,
+          source: newRecipe.source,
+          tags: newRecipe.tags ? newRecipe.tags.split(',').map(t => t.trim()).filter(t => t) : [],
+          comments: []
+        };
+
+        try {
+          if (editingRecipe) {
+            const updateData = {
+              ...recipeData,
+              last_edited_by: userName,
+              date_modified: new Date().toISOString()
+            };
+
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?id=eq.${editingRecipe.id}`, {
+              method: 'PATCH',
+              headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+              },
+              body: JSON.stringify(updateData)
+            });
+
+            if (!response.ok) throw new Error('Failed to update recipe');
+          } else {
+            const insertData = {
+              ...recipeData,
+              added_by: userName,
+              date_added: new Date().toISOString()
+            };
+
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes`, {
+              method: 'POST',
+              headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+              },
+              body: JSON.stringify(insertData)
+            });
+
+            if (!response.ok) throw new Error('Failed to add recipe');
+          }
+
+          await loadRecipes();
+          cancelEdit();
+        } catch (err) {
+          console.error('Save error:', err);
+          alert('Failed to save recipe. Please try again.');
+        }
+      };
+
+      const deleteRecipe = async (id) => {
+        if (!confirm('Are you sure you want to delete this recipe?')) return;
+        
+        try {
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+          });
+
+          if (!response.ok) throw new Error('Failed to delete recipe');
+          
+          await loadRecipes();
+        } catch (err) {
+          console.error('Delete error:', err);
+          alert('Failed to delete recipe. Please try again.');
+        }
+      };
+
+      const addComment = async (recipeId) => {
+        const comment = commentText[recipeId];
+        if (!comment || !comment.trim()) {
+          alert('Please enter a comment');
+          return;
+        }
+
+        if (!userName) {
+          alert('Please set your name first');
+          setShowNamePrompt(true);
+          return;
+        }
+
+        try {
+          const recipe = recipes.find(r => r.id === recipeId);
+          const newComment = {
+            id: Date.now(),
+            text: comment.trim(),
+            author: userName,
+            date: new Date().toISOString()
+          };
+
+          const updatedComments = [...(recipe.comments || []), newComment];
+
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?id=eq.${recipeId}`, {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({ comments: updatedComments })
+          });
+
+          if (!response.ok) throw new Error('Failed to add comment');
+
+          await loadRecipes();
+          setCommentText({ ...commentText, [recipeId]: '' });
+        } catch (err) {
+          console.error('Comment error:', err);
+          alert('Failed to add comment. Please try again.');
+        }
+      };
+
+      const deleteComment = async (recipeId, commentId) => {
+        if (!confirm('Delete this comment?')) return;
+        
+        try {
+          const recipe = recipes.find(r => r.id === recipeId);
+          const updatedComments = recipe.comments.filter(c => c.id !== commentId);
+
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?id=eq.${recipeId}`, {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({ comments: updatedComments })
+          });
+
+          if (!response.ok) throw new Error('Failed to delete comment');
+
+          await loadRecipes();
+        } catch (err) {
+          console.error('Delete comment error:', err);
+          alert('Failed to delete comment. Please try again.');
+        }
+      };
+
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      };
+
+      const filteredRecipes = recipes.filter(recipe => {
+        const categoryMatch = categoryFilter === 'all' || recipe.category === categoryFilter;
+        const tagMatch = tagFilter === 'all' || (recipe.tags && recipe.tags.includes(tagFilter));
+        
+        if (!searchTerm) return categoryMatch && tagMatch;
+        
+        const searchLower = searchTerm.toLowerCase();
+        const nameMatch = recipe.name.toLowerCase().includes(searchLower);
+        const ingredientMatch = recipe.ingredients.some(ing => 
+          ing.toLowerCase().includes(searchLower)
+        );
+        const sourceMatch = recipe.source?.toLowerCase().includes(searchLower);
+        const tagSearchMatch = recipe.tags?.some(tag => 
+          tag.toLowerCase().includes(searchLower)
+        );
+        
+        return categoryMatch && tagMatch && (nameMatch || ingredientMatch || sourceMatch || tagSearchMatch);
+      });
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50 p-4 md:p-8">
+          {showNamePrompt && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Welcome! What's your name?</h2>
+                <p className="text-gray-600 mb-4">
+                  Your name will be shown when you add or edit recipes, and when you comment.
+                </p>
+                <input
+                  id="nameInput"
+                  type="text"
+                  placeholder="Enter your name"
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-orange-400 mb-4"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      saveUserName(e.target.value);
+                    }
+                  }}
+                  autoFocus
+                />
+                <button
+                  onClick={() => {
+                    const input = document.getElementById('nameInput');
+                    saveUserName(input.value);
+                  }}
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-lg font-semibold transition-colors"
+                >
+                  Save Name
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <i data-lucide="chef-hat" className="w-10 h-10 text-orange-600"></i>
+                <h1 className="text-4xl font-bold text-gray-800">Recipe Database</h1>
+              </div>
+              <p className="text-gray-600">Shared recipe collection powered by Supabase</p>
+              
+              <button
+                onClick={() => setShowShareInfo(!showShareInfo)}
+                className="mt-2 text-orange-600 hover:text-orange-700 flex items-center gap-1 mx-auto"
+              >
+                <i data-lucide="share-2" className="w-4 h-4"></i>
+                <span className="ml-1">Install as iPhone App</span>
+              </button>
+              
+              {showShareInfo && (
+                <div className="mt-3 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg text-left max-w-2xl mx-auto">
+                  <h3 className="font-bold text-blue-900 mb-2">📱 Install as iPhone App (PWA):</h3>
+                  <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                    <li>Open this page in Safari on iPhone</li>
+                    <li>Tap the Share button (square with arrow)</li>
+                    <li>Scroll down and tap "Add to Home Screen"</li>
+                    <li>Tap "Add" - it now works like a native app!</li>
+                  </ol>
+                  
+                  {userName && (
+                    <p className="text-sm text-blue-800 mt-3">
+                      <strong>Signed in as:</strong> {userName} 
+                      <button 
+                        onClick={() => setShowNamePrompt(true)}
+                        className="ml-2 text-blue-600 underline hover:text-blue-800"
+                      >
+                        (change)
+                      </button>
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-lg text-red-800">
+                {error}
+              </div>
+            )}
+
+            {loading ? (
+              <div className="text-center py-12">
+                <i data-lucide="loader" className="w-12 h-12 text-orange-600 animate-spin mx-auto mb-4"></i>
+                <p className="text-gray-600">Loading recipes...</p>
+              </div>
+            ) : (
+              <>
+                <div className="mb-6 space-y-4">
+                  <div className="relative">
+                    <i data-lucide="search" className="absolute left-4 top-3.5 text-gray-400 w-5 h-5"></i>
+                    <input
+                      type="text"
+                      placeholder="Search by ingredient, recipe name, source, or tag..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 border-2 border-orange-200 rounded-lg focus:outline-none focus:border-orange-400 text-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="text-sm font-semibold text-gray-700 mb-2">Category:</div>
+                    <div className="flex gap-2 flex-wrap">
+                      <button
+                        onClick={() => setCategoryFilter('all')}
+                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                          categoryFilter === 'all' ? 'bg-orange-600 text-white' : 'bg-white text-gray-700 hover:bg-orange-100'
+                        }`}
+                      >
+                        All
+                      </button>
+                      {categories.map(cat => (
+                        <button
+                          key={cat.value}
+                          onClick={() => setCategoryFilter(cat.value)}
+                          className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                            categoryFilter === cat.value ? 'bg-orange-600 text-white' : 'bg-white text-gray-700 hover:bg-orange-100'
+                          }`}
+                        >
+                          {cat.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {getAllTags().length > 0 && (
+                    <div>
+                      <div className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1">
+                        <i data-lucide="tag" className="w-4 h-4"></i>
+                        <span className="ml-1">Tags:</span>
+                      </div>
+                      <div className="flex gap-2 flex-wrap">
+                        <button
+                          onClick={() => setTagFilter('all')}
+                          className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${
+                            tagFilter === 'all' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-purple-100'
+                          }`}
+                        >
+                          All
+                        </button>
+                        {getAllTags().map(tag => (
+                          <button
+                            key={tag}
+                            onClick={() => setTagFilter(tag)}
+                            className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${
+                              tagFilter === tag ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-purple-100'
+                            }`}
+                          >
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mb-6 flex justify-center">
+                  <button
+                    onClick={() => showAddForm ? cancelEdit() : setShowAddForm(true)}
+                    className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 font-semibold transition-colors"
+                  >
+                    {showAddForm ? <i data-lucide="x" className="w-5 h-5"></i> : <i data-lucide="plus" className="w-5 h-5"></i>}
+                    <span className="ml-1">{showAddForm ? 'Cancel' : 'Add New Recipe'}</span>
+                  </button>
+                </div>
+
+                {showAddForm && (
+                  <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                      {editingRecipe ? 'Edit Recipe' : 'Add New Recipe'}
+                    </h2>
+
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Recipe Name *</label>
+                        <input
+                          type="text"
+                          value={newRecipe.name}
+                          onChange={(e) => setNewRecipe({...newRecipe, name: e.target.value})}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
+                          placeholder="e.g., Spaghetti Carbonara"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-1">Category *</label>
+                          <select
+                            value={newRecipe.category}
+                            onChange={(e) => setNewRecipe({...newRecipe, category: e.target.value})}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
+                          >
+                            {categories.map(cat => (
+                              <option key={cat.value} value={cat.value}>{cat.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-1">Source</label>
+                          <input
+                            type="text"
+                            value={newRecipe.source}
+                            onChange={(e) => setNewRecipe({...newRecipe, source: e.target.value})}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
+                            placeholder="e.g., Grandma, NYT Cooking"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1">
+                          <i data-lucide="tag" className="w-4 h-4"></i>
+                          <span className="ml-1">Tags (comma-separated)</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={newRecipe.tags}
+                          onChange={(e) => setNewRecipe({...newRecipe, tags: e.target.value})}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
+                          placeholder="e.g., quick, vegetarian, comfort food"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Ingredients * (comma-separated)</label>
+                        <textarea
+                          value={newRecipe.ingredients}
+                          onChange={(e) => setNewRecipe({...newRecipe, ingredients: e.target.value})}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
+                          rows="3"
+                          placeholder="e.g., pasta, eggs, bacon, parmesan cheese, black pepper"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-1">Prep Time</label>
+                          <input
+                            type="text"
+                            value={newRecipe.prepTime}
+                            onChange={(e) => setNewRecipe({...newRecipe, prepTime: e.target.value})}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
+                            placeholder="e.g., 30 minutes"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-1">Servings</label>
+                          <input
+                            type="text"
+                            value={newRecipe.servings}
+                            onChange={(e) => setNewRecipe({...newRecipe, servings: e.target.value})}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
+                            placeholder="e.g., 4"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Instructions</label>
+                        <textarea
+                          value={newRecipe.instructions}
+                          onChange={(e) => setNewRecipe({...newRecipe, instructions: e.target.value})}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
+                          rows="5"
+                          placeholder="Step-by-step cooking instructions..."
+                        />
+                      </div>
+
+                      <button
+                        onClick={saveRecipe}
+                        className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-semibold transition-colors"
+                      >
+                        {editingRecipe ? 'Update Recipe' : 'Save Recipe'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <div className="space-y-4">
+                  {filteredRecipes.length === 0 ? (
+                    <div className="text-center py-12 bg-white rounded-xl shadow">
+                      <i data-lucide="chef-hat" className="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+                      <p className="text-gray-500 text-lg">
+                        {recipes.length === 0 
+                          ? 'No recipes yet. Add your first recipe to get started!' 
+                          : 'No recipes found matching your filters.'}
+                      </p>
+                    </div>
+                  ) : (
+                    filteredRecipes.map(recipe => (
+                      <div key={recipe.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex-1">
+                            <h3 className="text-2xl font-bold text-gray-800">{recipe.name}</h3>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                {categories.find(c => c.value === recipe.category)?.label}
+                              </span>
+                              {recipe.source && (
+                                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                                  📖 {recipe.source}
+                                </span>
+                              )}
+                              {recipe.tags && recipe.tags.map(tag => (
+                                <span key={tag} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
+                                  #{tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => startEdit(recipe)}
+                              className="text-blue-500 hover:text-blue-700 transition-colors"
+                              title="Edit recipe"
+                            >
+                              <i data-lucide="edit-2" className="w-5 h-5"></i>
+                            </button>
+                            <button
+                              onClick={() => deleteRecipe(recipe.id)}
+                              className="text-red-500 hover:text-red-700 transition-colors"
+                              title="Delete recipe"
+                            >
+                              <i data-lucide="x" className="w-5 h-5"></i>
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-4 mb-4 text-sm text-gray-600">
+                          {recipe.prep_time && (
+                            <div className="flex items-center gap-1">
+                              <i data-lucide="clock" className="w-4 h-4"></i>
+                              {recipe.prep_time}
+                            </div>
+                          )}
+                          {recipe.servings && (
+                            <div className="flex items-center gap-1">
+                              <i data-lucide="users" className="w-4 h-4"></i>
+                              {recipe.servings} servings
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="mb-4 pb-4 border-b border-gray-200 text-xs text-gray-500">
+                          {recipe.added_by && (
+                            <div>Added by <span className="font-semibold">{recipe.added_by}</span> on {formatDate(recipe.date_added)}</div>
+                          )}
+                          {recipe.last_edited_by && (
+                            <div className="mt-1">Last edited by <span className="font-semibold">{recipe.last_edited_by}</span> on {formatDate(recipe.date_modified)}</div>
+                          )}
+                        </div>
+
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-gray-700 mb-2">Ingredients:</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {recipe.ingredients.map((ing, idx) => (
+                              <span 
+                                key={idx}
+                                className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm"
+                              >
+                                {ing}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        {recipe.instructions && (
+                          <div className="mb-4">
+                            <h4 className="font-semibold text-gray-700 mb-2">Instructions:</h4>
+                            <p className="text-gray-600 whitespace-pre-line">{recipe.instructions}</p>
+                          </div>
+                        )}
+
+                        <div className="mt-6 pt-6 border-t border-gray-200">
+                          <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                            💬 Comments ({recipe.comments?.length || 0})
+                          </h4>
+                          
+                          <div className="mb-4 flex gap-2">
+                            <input
+                              type="text"
+                              placeholder="Add a comment..."
+                              value={commentText[recipe.id] || ''}
+                              onChange={(e) => setCommentText({ ...commentText, [recipe.id]: e.target.value })}
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                  addComment(recipe.id);
+                                }
+                              }}
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400 text-sm"
+                            />
+                            <button
+                              onClick={() => addComment(recipe.id)}
+                              className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm"
+                            >
+                              Post
+                            </button>
+                          </div>
+
+                          {recipe.comments && recipe.comments.length > 0 ? (
+                            <div className="space-y-3">
+                              {recipe.comments.map(comment => (
+                                <div key={comment.id} className="bg-gray-50 rounded-lg p-3">
+                                  <div className="flex justify-between items-start mb-1">
+                                    <span className="font-semibold text-gray-800 text-sm">{comment.author}</span>
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-xs text-gray-500">{formatDate(comment.date)}</span>
+                                      {comment.author === userName && (
+                                        <button
+                                          onClick={() => deleteComment(recipe.id, comment.id)}
+                                          className="text-red-500 hover:text-red-700"
+                                        >
+                                          <i data-lucide="x" className="w-3 h-3"></i>
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <p className="text-gray-700 text-sm">{comment.text}</p>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-gray-400 text-sm italic">No comments yet. Be the first to comment!</p>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<RecipeDatabase />, document.getElementById('root'));
+  </script>
 </body>
 </html>
