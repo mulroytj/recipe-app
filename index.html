@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src='https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js'></script>
   <style>
     [data-lucide] {
       width: 20px;
@@ -23,11 +25,12 @@
     }
   </style>
 </head>
+
 <body>
   <div id="root"></div>
-  
+
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  
+
   <script type="text/babel">
     const { useState, useEffect } = React;
     const SUPABASE_URL = 'https://tclszwdvmpgtquzrtqvw.supabase.co';
@@ -108,7 +111,7 @@
             const errorText = await response.text();
             throw new Error(`Failed to load recipes: ${response.status}`);
           }
-          
+
           const data = await response.json();
           setRecipes(data);
         } catch (err) {
@@ -128,6 +131,120 @@
         });
         return Array.from(tagSet).sort();
       };
+
+      const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const uploadBtn = e.target.parentElement;
+        uploadBtn.querySelector('span').textContent = 'Extracting text...';
+        uploadBtn.style.pointerEvents = 'none';
+
+        try {
+          // Run Tesseract OCR
+          const { data: { text } } = await Tesseract.recognize(
+            file,
+            'eng',
+            {
+              logger: m => {
+                if (m.status === 'recognizing text') {
+                  const progress = Math.round(m.progress * 100);
+                  uploadBtn.querySelector('span').textContent = `Processing: ${progress}%`;
+                }
+              }
+            }
+          );
+
+          // Simple parsing (you can improve this)
+          const lines = text.split('\n').filter(l => l.trim());
+          const name = lines[0] || '';
+
+          // Try to detect ingredients (lines with measurements)
+          const ingredientLines = lines.filter(l =>
+            /\d+/.test(l) && (l.includes('cup') || l.includes('tbsp') || l.includes('tsp') || l.includes('oz'))
+          );
+          const ingredients = ingredientLines.join(', ');
+
+          // Everything else is instructions
+          const instructions = lines.slice(ingredientLines.length + 1).join('\n');
+
+          setNewRecipe({
+            ...newRecipe,
+            name: name,
+            ingredients: ingredients,
+            instructions: instructions || text // Fallback to all text
+          });
+
+          alert('Text extracted! Please review and correct as needed.');
+        } catch (error) {
+          console.error('OCR error:', error);
+          alert('Failed to extract text. Please try again.');
+        } finally {
+          uploadBtn.querySelector('span').textContent = 'Choose Image';
+          uploadBtn.style.pointerEvents = 'auto';
+        }
+      };
+
+      // const handleImageUpload = async (e) => {
+      //   const file = e.target.files[0];
+      //   if (!file) return;
+
+      //   if (!file.type.startsWith('image/')) {
+      //     alert('Please upload an image file');
+      //     return;
+      //   }
+
+      //   const uploadBtn = e.target.parentElement;
+      //   const originalText = uploadBtn.querySelector('span').textContent;
+      //   uploadBtn.querySelector('span').textContent = 'Processing...';
+      //   uploadBtn.style.pointerEvents = 'none';
+
+      //   try {
+      //     const base64Data = await new Promise((resolve, reject) => {
+      //       const reader = new FileReader();
+      //       reader.onload = () => resolve(reader.result.split(',')[1]);
+      //       reader.onerror = reject;
+      //       reader.readAsDataURL(file);
+      //     });
+
+      //     const response = await fetch("https://api.anthropic.com/v1/messages", {
+      //       method: "POST",
+      //       headers: { "Content-Type": "application/json" },
+      //       body: JSON.stringify({
+      //         model: "claude-sonnet-4-20250514",
+      //         max_tokens: 1000,
+      //         messages: [{
+      //           role: "user",
+      //           content: [
+      //             { type: "image", source: { type: "base64", media_type: file.type, data: base64Data } },
+      //             { type: "text", text: 'Extract the recipe from this image. Return ONLY a JSON object: {"name":"recipe name","ingredients":"ing1, ing2","instructions":"steps","prepTime":"time","servings":"number"}' }
+      //           ]
+      //         }]
+      //       })
+      //     });
+
+      //     const data = await response.json();
+      //     const text = data.content.filter(i => i.type === "text").map(i => i.text).join("\n");
+      //     const extracted = JSON.parse(text.replace(/```json|```/g, "").trim());
+
+      //     setNewRecipe({
+      //       ...newRecipe,
+      //       name: extracted.name || '',
+      //       ingredients: extracted.ingredients || '',
+      //       instructions: extracted.instructions || '',
+      //       prepTime: extracted.prepTime || '',
+      //       servings: extracted.servings || ''
+      //     });
+
+      //     alert('Recipe extracted! Please review and edit as needed.');
+      //   } catch (error) {
+      //     console.error('OCR error:', error);
+      //     alert('Failed to extract recipe. Please try again or enter manually.');
+      //   } finally {
+      //     uploadBtn.querySelector('span').textContent = originalText;
+      //     uploadBtn.style.pointerEvents = 'auto';
+      //   }
+      // };
 
       const startEdit = (recipe) => {
         setEditingRecipe(recipe);
@@ -234,7 +351,7 @@
 
       const deleteRecipe = async (id) => {
         if (!confirm('Are you sure you want to delete this recipe?')) return;
-        
+
         try {
           const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?id=eq.${id}`, {
             method: 'DELETE',
@@ -245,7 +362,7 @@
           });
 
           if (!response.ok) throw new Error('Failed to delete recipe');
-          
+
           await loadRecipes();
         } catch (err) {
           console.error('Delete error:', err);
@@ -300,7 +417,7 @@
 
       const deleteComment = async (recipeId, commentId) => {
         if (!confirm('Delete this comment?')) return;
-        
+
         try {
           const recipe = recipes.find(r => r.id === recipeId);
           const updatedComments = recipe.comments.filter(c => c.id !== commentId);
@@ -327,9 +444,9 @@
 
       const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'short', 
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
           day: 'numeric',
           hour: '2-digit',
           minute: '2-digit'
@@ -339,19 +456,19 @@
       const filteredRecipes = recipes.filter(recipe => {
         const categoryMatch = categoryFilter === 'all' || recipe.category === categoryFilter;
         const tagMatch = tagFilter === 'all' || (recipe.tags && recipe.tags.includes(tagFilter));
-        
+
         if (!searchTerm) return categoryMatch && tagMatch;
-        
+
         const searchLower = searchTerm.toLowerCase();
         const nameMatch = recipe.name.toLowerCase().includes(searchLower);
-        const ingredientMatch = recipe.ingredients.some(ing => 
+        const ingredientMatch = recipe.ingredients.some(ing =>
           ing.toLowerCase().includes(searchLower)
         );
         const sourceMatch = recipe.source?.toLowerCase().includes(searchLower);
-        const tagSearchMatch = recipe.tags?.some(tag => 
+        const tagSearchMatch = recipe.tags?.some(tag =>
           tag.toLowerCase().includes(searchLower)
         );
-        
+
         return categoryMatch && tagMatch && (nameMatch || ingredientMatch || sourceMatch || tagSearchMatch);
       });
 
@@ -396,7 +513,7 @@
                 <h1 className="text-4xl font-bold text-gray-800">Recipe Database</h1>
               </div>
               <p className="text-gray-600">Shared recipe collection powered by Supabase</p>
-              
+
               <button
                 onClick={() => setShowShareInfo(!showShareInfo)}
                 className="mt-2 text-orange-600 hover:text-orange-700 flex items-center gap-1 mx-auto"
@@ -404,7 +521,7 @@
                 <i data-lucide="share-2" className="w-4 h-4"></i>
                 <span className="ml-1">Install as iPhone App</span>
               </button>
-              
+
               {showShareInfo && (
                 <div className="mt-3 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg text-left max-w-2xl mx-auto">
                   <h3 className="font-bold text-blue-900 mb-2">📱 Install as iPhone App (PWA):</h3>
@@ -414,11 +531,11 @@
                     <li>Scroll down and tap "Add to Home Screen"</li>
                     <li>Tap "Add" - it now works like a native app!</li>
                   </ol>
-                  
+
                   {userName && (
                     <p className="text-sm text-blue-800 mt-3">
-                      <strong>Signed in as:</strong> {userName} 
-                      <button 
+                      <strong>Signed in as:</strong> {userName}
+                      <button
                         onClick={() => setShowNamePrompt(true)}
                         className="ml-2 text-blue-600 underline hover:text-blue-800"
                       >
@@ -460,9 +577,8 @@
                     <div className="flex gap-2 flex-wrap">
                       <button
                         onClick={() => setCategoryFilter('all')}
-                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                          categoryFilter === 'all' ? 'bg-orange-600 text-white' : 'bg-white text-gray-700 hover:bg-orange-100'
-                        }`}
+                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${categoryFilter === 'all' ? 'bg-orange-600 text-white' : 'bg-white text-gray-700 hover:bg-orange-100'
+                          }`}
                       >
                         All
                       </button>
@@ -470,9 +586,8 @@
                         <button
                           key={cat.value}
                           onClick={() => setCategoryFilter(cat.value)}
-                          className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                            categoryFilter === cat.value ? 'bg-orange-600 text-white' : 'bg-white text-gray-700 hover:bg-orange-100'
-                          }`}
+                          className={`px-4 py-2 rounded-lg font-semibold transition-colors ${categoryFilter === cat.value ? 'bg-orange-600 text-white' : 'bg-white text-gray-700 hover:bg-orange-100'
+                            }`}
                         >
                           {cat.label}
                         </button>
@@ -489,9 +604,8 @@
                       <div className="flex gap-2 flex-wrap">
                         <button
                           onClick={() => setTagFilter('all')}
-                          className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${
-                            tagFilter === 'all' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-purple-100'
-                          }`}
+                          className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${tagFilter === 'all' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-purple-100'
+                            }`}
                         >
                           All
                         </button>
@@ -499,9 +613,8 @@
                           <button
                             key={tag}
                             onClick={() => setTagFilter(tag)}
-                            className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${
-                              tagFilter === tag ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-purple-100'
-                            }`}
+                            className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${tagFilter === tag ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-purple-100'
+                              }`}
                           >
                             {tag}
                           </button>
@@ -527,13 +640,35 @@
                       {editingRecipe ? 'Edit Recipe' : 'Add New Recipe'}
                     </h2>
 
+                    {!editingRecipe && (
+                      <div className="mb-6 p-4 border-2 border-dashed border-orange-300 rounded-lg bg-orange-50">
+                        <div className="flex items-center justify-center gap-3 mb-2">
+                          <i data-lucide="camera" className="w-6 h-6 text-orange-600"></i>
+                          <span className="font-semibold text-gray-700">Upload Recipe Photo (OCR)</span>
+                        </div>
+                        <p className="text-sm text-gray-600 text-center mb-3">
+                          Take a photo or upload an image of a recipe to automatically extract text
+                        </p>
+                        <label className="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg cursor-pointer transition-colors mx-auto w-fit">
+                          <i data-lucide="upload" className="w-4 h-4"></i>
+                          <span className="ml-1">Choose Image</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+                    )}
+
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Recipe Name *</label>
                         <input
                           type="text"
                           value={newRecipe.name}
-                          onChange={(e) => setNewRecipe({...newRecipe, name: e.target.value})}
+                          onChange={(e) => setNewRecipe({ ...newRecipe, name: e.target.value })}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
                           placeholder="e.g., Spaghetti Carbonara"
                         />
@@ -544,7 +679,7 @@
                           <label className="block text-sm font-semibold text-gray-700 mb-1">Category *</label>
                           <select
                             value={newRecipe.category}
-                            onChange={(e) => setNewRecipe({...newRecipe, category: e.target.value})}
+                            onChange={(e) => setNewRecipe({ ...newRecipe, category: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
                           >
                             {categories.map(cat => (
@@ -557,13 +692,13 @@
                           <input
                             type="text"
                             value={newRecipe.source}
-                            onChange={(e) => setNewRecipe({...newRecipe, source: e.target.value})}
+                            onChange={(e) => setNewRecipe({ ...newRecipe, source: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
                             placeholder="e.g., Grandma, NYT Cooking"
                           />
                         </div>
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1">
                           <i data-lucide="tag" className="w-4 h-4"></i>
@@ -572,7 +707,7 @@
                         <input
                           type="text"
                           value={newRecipe.tags}
-                          onChange={(e) => setNewRecipe({...newRecipe, tags: e.target.value})}
+                          onChange={(e) => setNewRecipe({ ...newRecipe, tags: e.target.value })}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
                           placeholder="e.g., quick, vegetarian, comfort food"
                         />
@@ -582,7 +717,7 @@
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Ingredients * (comma-separated)</label>
                         <textarea
                           value={newRecipe.ingredients}
-                          onChange={(e) => setNewRecipe({...newRecipe, ingredients: e.target.value})}
+                          onChange={(e) => setNewRecipe({ ...newRecipe, ingredients: e.target.value })}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
                           rows="3"
                           placeholder="e.g., pasta, eggs, bacon, parmesan cheese, black pepper"
@@ -595,7 +730,7 @@
                           <input
                             type="text"
                             value={newRecipe.prepTime}
-                            onChange={(e) => setNewRecipe({...newRecipe, prepTime: e.target.value})}
+                            onChange={(e) => setNewRecipe({ ...newRecipe, prepTime: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
                             placeholder="e.g., 30 minutes"
                           />
@@ -605,7 +740,7 @@
                           <input
                             type="text"
                             value={newRecipe.servings}
-                            onChange={(e) => setNewRecipe({...newRecipe, servings: e.target.value})}
+                            onChange={(e) => setNewRecipe({ ...newRecipe, servings: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
                             placeholder="e.g., 4"
                           />
@@ -616,7 +751,7 @@
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Instructions</label>
                         <textarea
                           value={newRecipe.instructions}
-                          onChange={(e) => setNewRecipe({...newRecipe, instructions: e.target.value})}
+                          onChange={(e) => setNewRecipe({ ...newRecipe, instructions: e.target.value })}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
                           rows="5"
                           placeholder="Step-by-step cooking instructions..."
@@ -637,8 +772,8 @@
                     <div className="text-center py-12 bg-white rounded-xl shadow">
                       <i data-lucide="chef-hat" className="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
                       <p className="text-gray-500 text-lg">
-                        {recipes.length === 0 
-                          ? 'No recipes yet. Add your first recipe to get started!' 
+                        {recipes.length === 0
+                          ? 'No recipes yet. Add your first recipe to get started!'
                           : 'No recipes found matching your filters.'}
                       </p>
                     </div>
@@ -710,7 +845,7 @@
                           <h4 className="font-semibold text-gray-700 mb-2">Ingredients:</h4>
                           <div className="flex flex-wrap gap-2">
                             {recipe.ingredients.map((ing, idx) => (
-                              <span 
+                              <span
                                 key={idx}
                                 className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm"
                               >
@@ -731,7 +866,7 @@
                           <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
                             💬 Comments ({recipe.comments?.length || 0})
                           </h4>
-                          
+
                           <div className="mb-4 flex gap-2">
                             <input
                               type="text"
@@ -793,4 +928,5 @@
     ReactDOM.render(<RecipeDatabase />, document.getElementById('root'));
   </script>
 </body>
+
 </html>
